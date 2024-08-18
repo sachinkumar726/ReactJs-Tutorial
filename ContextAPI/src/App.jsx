@@ -1,15 +1,18 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import UserContextProvider from './context/UserContextProvider'
+import Login from './Components/Login'
+import Profile from './Components/Profile'
 
-import { BrowserRouter, Router, Routes, Route } from 'react-router-dom'
-import Header from './Components/Header/Header'
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
     <>
+      <UserContextProvider>
+      <h1>Hello Context Api</h1>
+      <Login/>
+      <Profile/>
+      </UserContextProvider>
       
     </>
   )
