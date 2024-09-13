@@ -1,74 +1,71 @@
-import React, { useState } from 'react'
-import authService from '../appwrite/auth'
-import { Link, useNavigate } from 'react-router-dom'
-import { login } from '../store/authSlice'
-import { Button, Input, Logo } from './index'
-import { useDispatch } from 'react-redux'
-import { useForm } from 'react-hook-form'
-
+import React, { useState } from 'react';
+import authService from '../appwrite/auth';
+import { Link, useNavigate } from 'react-router-dom';
+import { login } from '../store/authSlice';
+import { Button, Input, Logo } from './index';
+import { useDispatch } from 'react-redux';
+import { useForm } from 'react-hook-form';
 
 function Signup() {
-
-    const navigate = useNavigate()
-    const [error, setError] = useState("")
-    const dispatch = useDispatch()
-    const { register, handelSubmit } = useForm()
+    const navigate = useNavigate();
+    const [error, setError] = useState("");
+    const dispatch = useDispatch();
+    const { register, handleSubmit } = useForm();
 
     const create = async (data) => {
-        setError("")
+        setError("");
         try {
-            const userData = await authService.createAccount
-                (data)
+            // Call createAccount method and await its response
+            const userData = await authService.createAccount(data);
             if (userData) {
-                const userData = await authService.getCurrentUser()
-                if (userData) {
-                    dispatch(login(userData));
-                    navigate("/")
+                // Fetch the current user data
+                const currentUserData = await authService.getCurrentUser();
+                if (currentUserData) {
+                    dispatch(login(currentUserData));
+                    navigate("/");
                 }
             }
         } catch (error) {
-            setError(error.message)
+            setError(error.message || "An error occurred");
         }
-    }
+    };
+
     return (
         <div className='flex items-center justify-center'>
-            <div className={`mx-auto w-full max-w-lg bg-gray-100 
-            rounded-xl p-10 border border-black/10`}>
+            <div className='mx-auto w-full max-w-lg bg-gray-100 rounded-xl p-10 border border-black/10'>
                 <div className='mb-2 flex justify-center'>
-                    <span className='iniline-block w-full 
-                    max-w-[100px]'>
+                    <span className='inline-block w-full max-w-[100px]'>
                         <Logo width='100%' />
                     </span>
                 </div>
-                <h2 className='text-center text-2xl font-bold
-                leading-tight'>Sign up to create Account</h2>
-                <p className='mt-2 text-center text-base text-balck/60'>
+                <h2 className='text-center text-2xl font-bold leading-tight'>
+                    Sign up to create Account
+                </h2>
+                <p className='mt-2 text-center text-base text-black/60'>
                     Already have an account?&nbsp;
                     <Link
                         to="/login"
-                        className='fornt-medium text-primary transition-all
-                        duration-200 hover:underline'>
+                        className='font-medium text-primary transition-all duration-200 hover:underline'>
                         Sign In
                     </Link>
                 </p>
-                {error && <p className='text-red-600 mt-8
-                text-center'>{error}</p>}
+                {error && <p className='text-red-600 mt-8 text-center'>{error}</p>}
 
-                <form onSubmit={handelSubmit(create)}>
+                <form onSubmit={handleSubmit(create)}>
                     <div className='space-y-5'>
                         <Input
                             label="Full Name:"
-                            placeholder="Enter Your Full name"
+                            placeholder="Enter Your Full Name"
                             {...register("name", {
-                                required: true
+                                required: "Full name is required"
                             })}
                         />
                         <Input
-                            label="email"
-                            placeholder="Enter your mail"
+                            label="Email"
+                            placeholder="Enter your email"
                             type="email"
                             {...register("email", {
-                                required: true,
+                                required: "Email is required",
                                 validate: {
                                     matchPattern: (value) =>
                                         /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value) ||
@@ -81,7 +78,7 @@ function Signup() {
                             type="password"
                             placeholder="Enter Your Password"
                             {...register("password", {
-                                required: true
+                                required: "Password is required"
                             })}
                         />
                         <Button
@@ -92,10 +89,9 @@ function Signup() {
                         </Button>
                     </div>
                 </form>
-
             </div>
         </div>
-    )
+    );
 }
 
-export default Signup
+export default Signup;
